@@ -45,6 +45,9 @@ const songSchema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 5
+    },
+    imageUrl: {
+        type: String
     }
 }, { timestamps: true });
 
