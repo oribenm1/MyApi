@@ -47,6 +47,10 @@ const songSchema = new mongoose.Schema({
         max: 5
     },
     imageUrl: {
+        type: String,
+        required: true
+    },
+    description: {
         type: String
     }
 }, { timestamps: true });

@@ -53,7 +53,7 @@ module.exports = {
     // 1️⃣ הוספת שיר חדש (שייך למשתמש לפי firebase_id_ref)
     createSong: async (req, res) => {
         try {
-            const { firebase_id_ref, name, singer, album, year, genre, rating, imageUrl } = req.body;
+            const { firebase_id_ref, name, singer, album, year, genre, rating, imageUrl,description } = req.body;
 
             if (!firebase_id_ref || !name || !singer) {
                 return res.status(400).json({ message: "firebase_id_ref, name and singer are required" });
@@ -67,6 +67,7 @@ module.exports = {
                 year,
                 genre,
                 imageUrl,
+                description,
                 rating: rating || 0,
                 countRating: rating ? 1 : 0
             });
