@@ -1,6 +1,54 @@
 const Song = require("../models/songModel");
+const User = require("../models/userModel");
 
 module.exports = {
+
+
+
+    createUser: async (req, res) => {
+    try {
+           const { uid, username, avatarUrl } = req.body;
+
+          if (!uid || !username) {
+               return res.status(400).json({ message: "uid and username are required" });
+           }
+
+          // בדיקה אם המשתמש כבר קיים
+           const existingUser = await User.findById(uid);
+           if (existingUser) {
+               return res.status(400).json({ message: "User already exists" });
+          }
+
+            const newUser = new User({
+               _id: uid,      // Firebase UID
+               username,
+              avatarUrl: avatarUrl || ""
+           });
+
+            await newUser.save();
+
+            res.status(201).json(newUser);
+
+        } catch (error) {
+           res.status(500).json({ message: error.message });
+        }
+    },
+
+    getUserByUid: async (req, res) => {
+     try {
+     const { uid } = req.params;
+
+     const user = await User.findById(uid);
+
+     if (!user) {
+       return res.status(404).json({ message: "User not found" });
+     }
+
+     res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+    },
 
     // 1️⃣ הוספת שיר חדש (שייך למשתמש לפי firebase_id_ref)
     createSong: async (req, res) => {

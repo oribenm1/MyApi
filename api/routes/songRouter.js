@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const {createSong ,getAllSongs ,getSongById ,getSongsByUser,deleteSong ,updateRating,updateSong} = require("../controllers/songController");
+const {createUser,getUserByUid,createSong ,getAllSongs ,getSongById ,getSongsByUser,deleteSong ,updateRating,updateSong} = require("../controllers/songController");
 
-// CRUD + דירוג
+router.post("/users", createUser);
+router.get("/user/:uid", getUserByUid);
 router.post("/", createSong);
 router.get("/", getAllSongs);
 router.get("/:id", getSongById);
