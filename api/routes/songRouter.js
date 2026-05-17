@@ -10,10 +10,10 @@ router.get("/", getAllSongs);
 router.get("/user/:firebase_id_ref", getSongsByUser);
 router.get("/:id/reviews", getSongReviews);
 router.get("/:id", getSongById);
+router.post("/:id/review", addReviewToSong);
 
 // מוגן
 router.post("/", auth, createSong);
-router.post("/:id/reviews", auth, addReviewToSong);
 router.patch("/:id", auth, updateSong);
 router.patch("/:id/rating", auth, updateRating);
 router.delete("/:id", auth, deleteSong);
