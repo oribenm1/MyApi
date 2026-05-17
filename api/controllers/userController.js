@@ -4,28 +4,30 @@ module.exports = {
 
     createUser: async (req, res) => {
     try {
-        const { firebase_uid, username, avatarUrl } = req.body;
+        // ✅ support both raw object OR wrapped object
+        const body = req.body.user ? req.body.user : req.body;
 
-        // ✅ Validate required fields
+        const firebase_uid = body.firebase_uid || body.firebaseUid;
+        const username = body.username;
+        const avatarUrl = body.avatarUrl || "";
+
         if (!firebase_uid || !username) {
             return res.status(400).json({
-                message: "firebase_uid and username are required"
+                message: "firebase_uid and username are required",
+                received: body
             });
         }
 
-        // ✅ Check if user already exists
         let user = await User.findOne({ firebase_uid });
 
-        // If exists → return existing user
         if (user) {
             return res.status(200).json(user);
         }
 
-        // ✅ Create new user
         user = new User({
             firebase_uid,
             username,
-            avatarUrl: avatarUrl || ""
+            avatarUrl
         });
 
         await user.save();
@@ -34,7 +36,7 @@ module.exports = {
 
     } catch (err) {
         return res.status(500).json({
-            message: "Server error while creating user",
+            message: "Server error",
             error: err.message
         });
     }
