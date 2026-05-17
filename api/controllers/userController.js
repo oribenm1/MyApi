@@ -27,14 +27,23 @@ module.exports = {
     },
 
     getUserByUid: async (req, res) => {
-        try {
-            const user = await User.findOne({ firebase_uid: req.params.uid });
+    try {
+        const { uid } = req.params;
 
-            if (!user) return res.status(404).json({ message: "User not found" });
-
-            res.json(user);
-        } catch (err) {
-            res.status(400).json({ error: err.message });
+        if (!uid) {
+            return res.status(400).json({ message: "uid param is required" });
         }
+
+        const user = await User.findOne({ firebase_uid: uid });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json(user);
+
+    } catch (err) {
+        return res.status(500).json({ error: err.message });
     }
+}
 };
