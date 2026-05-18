@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     ],
     playlists: [
         {
+            imageUrl: {
+                type: String,
+                default: ""
+            },
             name: {
                 type: String,
                 default: "My Playlist"

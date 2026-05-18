@@ -62,7 +62,7 @@ module.exports = {
         return res.status(500).json({ error: err.message });
     }
 },
-    getUserPlaylists: async (req, res) => {
+getUserPlaylists: async (req, res) => {
     try {
         const user = await User.findOne({ firebase_uid: req.params.uid });
 
@@ -76,7 +76,7 @@ module.exports = {
 createPlaylist: async (req, res) => {
     try {
         const { uid } = req.params;
-        const { name } = req.body;
+        const { name,imageUrl } = req.body;
 
         const user = await User.findOne({ firebase_uid: uid });
 
@@ -86,6 +86,7 @@ createPlaylist: async (req, res) => {
 
         const newPlaylist = {
             name,
+            imageUrl,
             songs: []
         };
 
@@ -134,7 +135,7 @@ addSongToPlaylist: async (req, res) => {
     }
 },
 
-    getUserLikedSongs: async (req, res) => {
+getUserLikedSongs: async (req, res) => {
     try {
         const user = await User.findOne({ firebase_uid: req.params.uid })
             .populate("likedSongs");
