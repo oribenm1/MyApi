@@ -190,5 +190,19 @@ unlikeSong: async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
+},
+getSongsByIds: async (req, res) => {
+    try {
+        const { ids } = req.body;
+
+        const songs = await Song.find({
+            _id: { $in: ids }
+        });
+
+        res.status(200).json(songs);
+
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 }
 };
