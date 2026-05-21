@@ -11,6 +11,6 @@ router.delete("/:uid/liked/:songId", unlikeSong);
 router.post("/:uid/playlists", createPlaylist);
 router.post("/:uid/playlists/:playlistId/songs/:songId", addSongToPlaylist);
 router.post("/songs/byIds", getSongsByIds);
-router.put("/playlist/:id",renamePlaylist );
+router.put("/playlist/:playlistId", renamePlaylist);
 
 module.exports = router;
