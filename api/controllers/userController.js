@@ -207,10 +207,29 @@ getSongsByIds: async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 },
+getUserLikedSongs: async (req, res) => {
+    try {
+        const { uid } = req.params;
+
+        const user = await User.findOne({ firebase_uid: uid })
+            .populate("likedSongs");
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user.likedSongs || []);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error" });
+    }
+},
 renamePlaylist: async (req, res) => {
     try {
         const { uid, playlistId } = req.params;
-        const name = req.body; // 👈 because it's raw string
+        const name = req.body;
+        console.log("BODY RECEIVED:", req.body);
 
         if (!name || name.trim() === "") {
             return res.status(400).json({ message: "Name cannot be empty" });
