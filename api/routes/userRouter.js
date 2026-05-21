@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getSongsByIds,createUser, getUserByUid,getUserLikedSongs,getUserPlaylists,unlikeSong,createPlaylist,addSongToPlaylist,likeSong } = require("../controllers/userController");
+const {renamePlaylist, getSongsByIds,createUser, getUserByUid,getUserLikedSongs,getUserPlaylists,unlikeSong,createPlaylist,addSongToPlaylist,likeSong } = require("../controllers/userController");
 
 router.post("/", createUser);
 router.get("/get/:uid", getUserByUid);
@@ -11,5 +11,6 @@ router.delete("/:uid/liked/:songId", unlikeSong);
 router.post("/:uid/playlists", createPlaylist);
 router.post("/:uid/playlists/:playlistId/songs/:songId", addSongToPlaylist);
 router.post("/songs/byIds", getSongsByIds);
+router.put("/playlist/:name",renamePlaylist );
 
 module.exports = router;

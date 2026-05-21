@@ -204,5 +204,31 @@ getSongsByIds: async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
+},
+renamePlaylist: async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+
+        if (!name || name.trim() === "") {
+            return res.status(400).json({ message: "Name cannot be empty" });
+        }
+
+        const updatedPlaylist = await Playlist.findByIdAndUpdate(
+            id,
+            { name: name.trim() },
+            { new: true }
+        );
+
+        if (!updatedPlaylist) {
+            return res.status(404).json({ message: "Playlist not found" });
+        }
+
+        res.status(200).json(updatedPlaylist);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error" });
+    }
 }
 };
