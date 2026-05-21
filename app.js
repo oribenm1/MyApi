@@ -10,7 +10,6 @@ const path = require('path');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.text({ type: "*/*" }));
 
 // 🔥 Firebase Admin
 const admin = require("firebase-admin");

@@ -228,10 +228,16 @@ getUserLikedSongs: async (req, res) => {
 renamePlaylist: async (req, res) => {
     try {
         const { uid, playlistId } = req.params;
-        const name = req.body;
-        console.log("BODY RECEIVED:", req.body);
 
-        if (!name || name.trim() === "") {
+        // 🔥 SAFE PARSING FOR BOTH CASES
+        let name = req.body;
+
+        // if JSON accidentally wraps it
+        if (typeof name === "object") {
+            name = name.name;
+        }
+
+        if (!name || typeof name !== "string" || name.trim() === "") {
             return res.status(400).json({ message: "Name cannot be empty" });
         }
 
