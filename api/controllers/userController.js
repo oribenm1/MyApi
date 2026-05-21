@@ -207,7 +207,7 @@ getSongsByIds: async (req, res) => {
 },
 renamePlaylist: async (req, res) => {
     try {
-        const { id } = req.params;
+        const { playlistId } = req.params;
         const { name } = req.body;
 
         if (!name || name.trim() === "") {
@@ -215,7 +215,7 @@ renamePlaylist: async (req, res) => {
         }
 
         const updatedPlaylist = await Playlist.findByIdAndUpdate(
-            id,
+            playlistId,
             { name: name.trim() },
             { new: true }
         );
