@@ -24,27 +24,35 @@ const userSchema = new mongoose.Schema({
         }
     ],
     playlists: [
-        {
-            imageUrl: {
-                type: String,
-                default: ""
-            },
-            name: {
-                type: String,
-                default: "My Playlist"
-            },
-            songs: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Song"
-                }
-            ],
-            createdAt: {
-                type: Date,
-                default: Date.now
+    {
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            default: () => new mongoose.Types.ObjectId()
+        },
+
+        imageUrl: {
+            type: String,
+            default: ""
+        },
+
+        name: {
+            type: String,
+            default: "My Playlist"
+        },
+
+        songs: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Song"
             }
+        ],
+
+        createdAt: {
+            type: Date,
+            default: Date.now
         }
-    ]
+    }
+]
 
 }, { timestamps: true });
 

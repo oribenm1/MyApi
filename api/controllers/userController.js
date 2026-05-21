@@ -135,16 +135,18 @@ addSongToPlaylist: async (req, res) => {
     }
 },
 
-getUserLikedSongs: async (req, res) => {
+getUserPlaylists: async (req, res) => {
     try {
-        const user = await User.findOne({ firebase_uid: req.params.uid })
-            .populate("likedSongs");
+        const user = await User.findOne({ firebase_uid: req.params.uid });
 
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-        res.json(user.likedSongs || []);
+        res.json(user.playlists || []);
+
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(500).json({ error: err.message });
     }
 },
 likeSong: async (req, res) => {
@@ -207,24 +209,30 @@ getSongsByIds: async (req, res) => {
 },
 renamePlaylist: async (req, res) => {
     try {
-        const { playlistId } = req.params;
-        const { name } = req.body;
+        const { uid, playlistId } = req.params;
+        const name = req.body; // 👈 because it's raw string
 
         if (!name || name.trim() === "") {
             return res.status(400).json({ message: "Name cannot be empty" });
         }
 
-        const updatedPlaylist = await Playlist.findByIdAndUpdate(
-            playlistId,
-            { name: name.trim() },
-            { new: true }
-        );
+        const user = await User.findOne({ firebase_uid: uid });
 
-        if (!updatedPlaylist) {
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const playlist = user.playlists.id(playlistId);
+
+        if (!playlist) {
             return res.status(404).json({ message: "Playlist not found" });
         }
 
-        res.status(200).json(updatedPlaylist);
+        playlist.name = name.trim();
+
+        await user.save();
+
+        res.status(200).json(playlist);
 
     } catch (error) {
         console.log(error);
