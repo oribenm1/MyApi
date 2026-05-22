@@ -255,5 +255,37 @@ renamePlaylist: async (req, res) => {
         console.log(error);
         res.status(500).json({ message: "Server error" });
     }
+},
+changePlaylistImage: async (req, res) => {
+    try {
+
+        const { uid, playlistId, image } = req.params;
+
+        if (image === "") {
+            return res.status(400).json({ message: "Image is required" });
+        }
+
+        const user = await User.findOne({ firebase_uid: uid });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const playlist = user.playlists.id(playlistId);
+
+        if (!playlist) {
+            return res.status(404).json({ message: "Playlist not found" });
+        }
+
+        playlist.image = image.trim();
+
+        await user.save();
+
+        res.status(200).json(playlist);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Server error" });
+    }
 }
 };
