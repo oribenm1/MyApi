@@ -230,7 +230,7 @@ renamePlaylist: async (req, res) => {
         const { uid, playlistId } = req.params;
         const { name } = req.body;
 
-        if (!name) {
+        if (name === "") {
             return res.status(400).json({ message: name });
         }
 
