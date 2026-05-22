@@ -267,6 +267,7 @@ changePlaylistImage: async (req, res) => {
         const user = await User.findOne({ firebase_uid: uid });
 
         if (!user) {
+            console.log("user not found")
             return res.status(404).json({ message: "User not found" });
         }
 
