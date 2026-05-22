@@ -258,10 +258,11 @@ renamePlaylist: async (req, res) => {
 },
 changePlaylistImage: async (req, res) => {
     try {
-
         const { uid, playlistId, image } = req.params;
 
-        if (image === "") {
+        const decodedImage = decodeURIComponent(image);
+
+        if (!decodedImage || decodedImage.trim() === "") {
             return res.status(400).json({ message: "Image is required" });
         }
 
@@ -277,15 +278,15 @@ changePlaylistImage: async (req, res) => {
             return res.status(404).json({ message: "Playlist not found" });
         }
 
-        playlist.image = image.trim();
+        playlist.image = decodedImage.trim();
 
         await user.save();
 
-        res.status(200).json(playlist);
+        return res.status(200).json(playlist);
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error" });
     }
 }
 };
