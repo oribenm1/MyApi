@@ -275,9 +275,7 @@ changePlaylistImage: async (req, res) => {
         if (!playlist) {
             return res.status(404).json({ message: "Playlist not found" });
         }
-
-        // store URL exactly as received (no decode)
-        playlist.image = image.trim();
+        playlist.imageUrl = image.trim();
 
         await user.save();
 
