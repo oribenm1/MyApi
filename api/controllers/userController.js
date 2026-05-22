@@ -260,10 +260,8 @@ changePlaylistImage: async (req, res) => {
     try {
         const { uid, playlistId, image } = req.params;
 
-        const decodedImage = decodeURIComponent(image);
-
-        if (!decodedImage || decodedImage.trim() === "") {
-            return res.status(400).json({ message: "Image is required" });
+        if (!image || image.trim() === "") {
+            return res.status(400).json({ message: "Image URL is required" });
         }
 
         const user = await User.findOne({ firebase_uid: uid });
@@ -278,7 +276,8 @@ changePlaylistImage: async (req, res) => {
             return res.status(404).json({ message: "Playlist not found" });
         }
 
-        playlist.image = decodedImage.trim();
+        // store URL exactly as received (no decode)
+        playlist.image = image.trim();
 
         await user.save();
 
