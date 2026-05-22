@@ -227,8 +227,7 @@ getUserLikedSongs: async (req, res) => {
 },
 renamePlaylist: async (req, res) => {
     try {
-        const { uid, playlistId } = req.params;
-        const name  = req.body;
+        const { uid, playlistId, name } = req.params;
 
         if (name === "") {
             return res.status(400).json({ message: name });
