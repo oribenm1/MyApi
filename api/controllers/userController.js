@@ -231,7 +231,7 @@ renamePlaylist: async (req, res) => {
         const { name } = req.body;
 
         if (!name) {
-            return res.status(400).json({ message: "Name cannot be empty" });
+            return res.status(400).json({ message: name });
         }
 
         const user = await User.findOne({ firebase_uid: uid });
