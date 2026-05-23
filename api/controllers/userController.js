@@ -11,13 +11,6 @@ createUser: async (req, res) => {
                 message: "UID is required"
             });
         }
-
-        if (!req.body.username) {
-            return res.status(400).json({
-                code: "USERNAME_REQUIRED",
-                message: "Username is required"
-            });
-        }
         const existingUser = await User.findOne({ username: req.body.username });
 
         if (existingUser) {
