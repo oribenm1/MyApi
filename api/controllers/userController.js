@@ -4,42 +4,48 @@ module.exports = {
 
 createUser: async (req, res) => {
     try {
-        const body = req.body.user ? req.body.user : req.body;
 
-        const firebase_uid = body.firebase_uid;
-        const username = body.username;
-        const avatarUrl = body.avatarUrl || "";
-
-        if (firebase_uid === "" || username === "") {
+        if (!req.body.firebase_uid) {
             return res.status(400).json({
-                message: "firebase_uid and username are required",
-                received: body
+                code: "UID_REQUIRED",
+                message: "UID is required"
             });
         }
 
-        let user = await User.findOne({ firebase_uid });
+        if (!req.body.username) {
+            return res.status(400).json({
+                code: "USERNAME_REQUIRED",
+                message: "Username is required"
+            });
+        }
+        const existingUser = await User.findOne({ username: req.body.username });
 
-        if (user) {
-            return res.status(200).json(user);
+        if (existingUser) {
+            return res.status(409).json({
+                code: "USERNAME_EXISTS",
+                message: "Username already exists"
+            });
         }
 
-        user = new User({
-            firebase_uid,
-            username,
-            avatarUrl
-        });
-
-        await user.save();
+        // ✅ create user
+        const user = await User.create(req.body);
 
         return res.status(201).json(user);
 
     } catch (err) {
+        console.error("Error in createUser:", err);
+        if (err.code === 11000) {
+            return res.status(409).json({
+                code: "USERNAME_EXISTS",
+                message: "Username already exists"
+            });
+        }
+
         return res.status(500).json({
-            message: "Server error",
-            error: err.message
+            code: "SERVER_ERROR",
+            message: err.message
         });
-        console.log(err.message);
-    }
+}
 },
 getUserByUid: async (req, res) => {
     try {
