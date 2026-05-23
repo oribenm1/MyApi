@@ -4,14 +4,13 @@ module.exports = {
 
 createUser: async (req, res) => {
     try {
-        // ✅ support both raw object OR wrapped object
         const body = req.body.user ? req.body.user : req.body;
 
-        const firebase_uid = body.firebase_uid || body.firebaseUid;
+        const firebase_uid = body.firebase_uid;
         const username = body.username;
         const avatarUrl = body.avatarUrl || "";
 
-        if (!firebase_uid || !username) {
+        if (firebase_uid === "" || username === "") {
             return res.status(400).json({
                 message: "firebase_uid and username are required",
                 received: body
