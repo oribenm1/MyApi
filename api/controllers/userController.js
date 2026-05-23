@@ -117,9 +117,9 @@ addSongToPlaylist: async (req, res) => {
             return res.status(404).json({ message: "Playlist not found" });
         }
 
-        // avoid duplicates
-        if (!playlist.songs.includes(songId)) {
-            playlist.songs.push(songId);
+        const song = await Song.findOne(songId)
+        if (!playlist.songs.includes(song)) {
+            playlist.songs.push(song);
         }
 
         await user.save();
