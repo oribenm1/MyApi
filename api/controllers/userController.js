@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 
 module.exports = {
 
-    createUser: async (req, res) => {
+createUser: async (req, res) => {
     try {
         // ✅ support both raw object OR wrapped object
         const body = req.body.user ? req.body.user : req.body;
@@ -41,8 +41,7 @@ module.exports = {
         });
     }
 },
-
-    getUserByUid: async (req, res) => {
+getUserByUid: async (req, res) => {
     try {
         const { uid } = req.params;
 
