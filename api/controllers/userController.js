@@ -38,6 +38,7 @@ createUser: async (req, res) => {
             message: "Server error",
             error: err.message
         });
+        console.log(err.message);
     }
 },
 getUserByUid: async (req, res) => {
