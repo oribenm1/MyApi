@@ -127,21 +127,29 @@ addSongToPlaylist: async (req, res) => {
             return res.status(404).json({ message: "Playlist not found" });
         }
 
-        const song = await Song.findById(songId)
-        if (!playlist.songs.includes(song)) {
-            playlist.songs.push(song);
+        const song = await Song.findById(songId);
+
+        if (!song) {
+            return res.status(404).json({ message: "Song not found" });
+        }
+        const alreadyExists = playlist.songs.some(
+            (id) => id.toString() === song._id.toString()
+        );
+
+        if (!alreadyExists) {
+            playlist.songs.push(song._id);
         }
 
         await user.save();
 
-        res.json({
-            message: "Song added to playlist",
+        return res.json({
+            message: alreadyExists ? "Song already in playlist" : "Song added to playlist",
             playlist
         });
 
     } catch (err) {
-        console.log(err.message)
-        res.status(400).json({ error: err.message });
+        console.log(err.message);
+        return res.status(400).json({ error: err.message });
     }
 },
 
