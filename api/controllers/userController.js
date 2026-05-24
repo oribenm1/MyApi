@@ -137,7 +137,7 @@ addSongToPlaylist: async (req, res) => {
         );
 
         if (!alreadyExists) {
-            playlist.songs.push(song._id);
+            playlist.songs.push(song);
         }
 
         await user.save();
