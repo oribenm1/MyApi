@@ -220,20 +220,6 @@ unlikeSong: async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 },
-getSongsByIds: async (req, res) => {
-    try {
-        const { ids } = req.body;
-
-        const songs = await Song.find({
-            _id: { $in: ids }
-        });
-
-        res.status(200).json(songs);
-
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-},
 getUserLikedSongs: async (req, res) => {
     try {
         const { uid } = req.params;
@@ -312,6 +298,40 @@ changePlaylistImage: async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Server error" });
+    }
+},
+deletePlaylist: async (req, res) => {
+    try {
+        const { uid, playlistId } = req.params;
+
+        const user = await User.findOne({ firebase_uid: uid });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // find playlist index
+        const index = user.playlists.findIndex(
+            (p) => p._id.toString() === playlistId
+        );
+
+        if (index === -1) {
+            return res.status(404).json({ message: "Playlist not found" });
+        }
+
+        // remove playlist
+        user.playlists.splice(index, 1);
+
+        await user.save();
+
+        return res.json({
+            message: "Playlist deleted successfully",
+            playlists: user.playlists
+        });
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: err.message });
     }
 }
 };
