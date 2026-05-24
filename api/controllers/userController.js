@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Song = require("../models/songModel");
 
 module.exports = {
 
@@ -126,7 +127,7 @@ addSongToPlaylist: async (req, res) => {
             return res.status(404).json({ message: "Playlist not found" });
         }
 
-        const song = await Song.findOne(songId)
+        const song = await Song.findById(songId)
         if (!playlist.songs.includes(song)) {
             playlist.songs.push(song);
         }
