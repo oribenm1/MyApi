@@ -5,7 +5,7 @@ module.exports = {
 createUser: async (req, res) => {
 
     console.log(req.body);
-    
+
     try {
 
         const {
@@ -139,6 +139,7 @@ addSongToPlaylist: async (req, res) => {
         });
 
     } catch (err) {
+        console.log(err.message)
         res.status(400).json({ error: err.message });
     }
 },
