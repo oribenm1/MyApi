@@ -2,8 +2,6 @@ const Song = require("../models/songModel");
 const Review = require("../models/reviewModel");
 
 module.exports = {
-
-    // 1️⃣ Create Song
     createSong: async (req, res) => {
         try {
             const { firebase_id_ref, name, singer, album, year, genre, imageUrl } = req.body;
@@ -33,58 +31,6 @@ module.exports = {
         }
     },
 
-
-    // 2️⃣ (UNCHANGED LOGIC - but safe)
-    updateRating: async (req, res) => {
-        try {
-            const { rating, comment, userId, userName } = req.body;
-
-            if (rating < 1 || rating > 5) {
-                return res.status(400).json({
-                    message: "Rating must be between 1 and 5"
-                });
-            }
-
-            const song = await Song.findById(req.params.id);
-
-            if (!song) {
-                return res.status(404).json({
-                    message: "Song not found"
-                });
-            }
-
-            // ❗ FIX: ensure array exists
-            if (!song.reviews_id) song.reviews_id = [];
-
-            song.reviews_id.push({
-                userId,
-                userName,
-                rating,
-                comment
-            });
-
-            await song.save();
-
-            const total = song.reviews_id.reduce(
-                (sum, r) => sum + r.rating,
-                0
-            );
-
-            const avg = total / song.reviews_id.length;
-
-            res.json({
-                ...song.toObject(),
-                rating: avg,
-                countRating: song.reviews_id.length
-            });
-
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    },
-
-
-    // 3️⃣ Get All Songs (unchanged)
     getAllSongs: async (req, res) => {
         try {
             const { genre, singer, sortBy, order } = req.query;
@@ -105,9 +51,6 @@ module.exports = {
             res.status(500).json({ error: err.message });
         }
     },
-
-
-    // 4️⃣ Get Song By ID
     getSongById: async (req, res) => {
         try {
             const song = await Song.findById(req.params.id);
@@ -141,61 +84,6 @@ module.exports = {
             res.status(400).json({ error: err.message });
         }
     },
-
-
-    // 5️⃣ Get Songs by User (unchanged)
-    getSongsByUser: async (req, res) => {
-        try {
-            const { firebase_id_ref } = req.params;
-
-            const songs = await Song.find({ firebase_id_ref });
-            res.json(songs);
-
-        } catch (err) {
-            res.status(400).json({ error: err.message });
-        }
-    },
-
-
-    // 6️⃣ Update Song (unchanged)
-    updateSong: async (req, res) => {
-        try {
-            const song = await Song.findByIdAndUpdate(
-                req.params.id,
-                req.body,
-                { new: true }
-            );
-
-            if (!song) {
-                return res.status(404).json({
-                    message: "Song not found"
-                });
-            }
-
-            res.json(song);
-
-        } catch (err) {
-            res.status(400).json({ error: err.message });
-        }
-    },
-
-
-    // 7️⃣ Delete Song (unchanged)
-    deleteSong: async (req, res) => {
-        try {
-            await Song.findByIdAndDelete(req.params.id);
-
-            res.json({
-                message: "Song deleted"
-            });
-
-        } catch (err) {
-            res.status(400).json({ error: err.message });
-        }
-    },
-
-
-    // 💬 Get all reviews for a song
     getSongReviews: async (req, res) => {
         try {
             const songId = req.params.id;
@@ -219,9 +107,6 @@ module.exports = {
             res.status(500).json({ error: err.message });
         }
     },
-
-
-    // 💬 Add review to song
     addReviewToSong: async (req, res) => {
         try {
             const songId = req.params.id;
