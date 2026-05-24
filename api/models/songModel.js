@@ -35,7 +35,7 @@ const songSchema = new mongoose.Schema(
       enum: [
         "Pop",
         "Rock",
-        "Hip Hop",
+        "HipHop",
         "Rap",
         "Electronic",
         "Jazz",
