@@ -4,13 +4,7 @@ const Review = require("../models/reviewModel");
 module.exports = {
     createSong: async (req, res) => {
         try {
-            const { firebase_id_ref, name, singer, album, year, genre, imageUrl } = req.body;
-
-            if (!firebase_id_ref || !name || !singer || !imageUrl) {
-                return res.status(400).json({
-                    message: "firebase_id_ref, name and singer are required"
-                });
-            }
+            const { firebase_id_ref, name, singer, album, year, genre, imageUrl, rating } = req.body;
 
             const song = new Song({
                 firebase_id_ref,
@@ -20,7 +14,9 @@ module.exports = {
                 year,
                 genre,
                 imageUrl,
-                reviews_id: []   // ✅ FIX: was "reviews"
+                rating: rating || 0,
+                countRating: 1,
+                reviews_id: []
             });
 
             await song.save();
