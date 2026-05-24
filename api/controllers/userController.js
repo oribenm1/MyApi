@@ -115,8 +115,7 @@ addSongToPlaylist: async (req, res) => {
     try {
         const { uid, playlistId, songId } = req.params;
 
-        const user = await User.findOne({ firebase_uid: uid }).populate("playlists.songs");
-        return res.json(user.playlists);
+        const user = await User.findOne({ firebase_uid: uid });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -133,24 +132,29 @@ addSongToPlaylist: async (req, res) => {
         if (!song) {
             return res.status(404).json({ message: "Song not found" });
         }
-        const alreadyExists = playlist.songs.some(
+
+        // IMPORTANT: compare ObjectIds correctly
+        const exists = playlist.songs.some(
             (id) => id.toString() === song._id.toString()
         );
 
-        if (!alreadyExists) {
-            playlist.songs.push(song);
+        if (!exists) {
+            playlist.songs.push(song._id);
+
+            // 🔥 IMPORTANT FIX
+            user.markModified("playlists");
         }
 
         await user.save();
 
         return res.json({
-            message: alreadyExists ? "Song already in playlist" : "Song added to playlist",
+            message: exists ? "Already exists" : "Song added",
             playlist
         });
 
     } catch (err) {
-        console.log(err.message);
-        return res.status(400).json({ error: err.message });
+        console.log(err);
+        return res.status(500).json({ error: err.message });
     }
 },
 
