@@ -115,7 +115,8 @@ addSongToPlaylist: async (req, res) => {
     try {
         const { uid, playlistId, songId } = req.params;
 
-        const user = await User.findOne({ firebase_uid: uid });
+        const user = await User.findOne({ firebase_uid: uid }).populate("playlists.songs");
+        return res.json(user.playlists);
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
