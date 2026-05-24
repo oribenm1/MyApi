@@ -163,16 +163,17 @@ addSongToPlaylist: async (req, res) => {
 
 getUserPlaylists: async (req, res) => {
     try {
-        const user = await User.findOne({ firebase_uid: req.params.uid });
+        const user = await User.findOne({ firebase_uid: req.params.uid })
+            .populate("playlists.songs");
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.json(user.playlists || []);
+        return res.json(user.playlists);
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
     }
 },
 likeSong: async (req, res) => {
