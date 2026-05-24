@@ -4,34 +4,48 @@ module.exports = {
 
 createUser: async (req, res) => {
     try {
-        const existingUser = await User.findOne({ username: req.body.username });
+
+        const {
+            firebase_uid,
+            username,
+            avatarUrl
+        } = req.body;
+
+        // validation
+        if (!firebase_uid || !username) {
+            return res.status(400).json({
+                message: "firebase_uid and username are required"
+            });
+        }
+
+        const existingUser = await User.findOne({
+            firebase_uid
+        });
 
         if (existingUser) {
             return res.status(409).json({
-                code: "USERNAME_EXISTS",
-                message: "Username already exists"
+                message: "User already exists"
             });
         }
 
-        // ✅ create user
-        const user = await User.create(req.body);
+        const user = new User({
+            firebase_uid,
+            username,
+            avatarUrl: avatarUrl || ""
+        });
 
-        return res.status(201).json(user);
+        await user.save();
+
+        res.status(201).json(user);
 
     } catch (err) {
-        console.error("Error in createUser:", err);
-        if (err.code === 11000) {
-            return res.status(409).json({
-                code: "USERNAME_EXISTS",
-                message: "Username already exists"
-            });
-        }
 
-        return res.status(500).json({
-            code: "SERVER_ERROR",
-            message: err.message
+        console.log(err);
+
+        res.status(500).json({
+            message: "Server error"
         });
-}
+    }
 },
 getUserByUid: async (req, res) => {
     try {
