@@ -133,23 +133,26 @@ addSongToPlaylist: async (req, res) => {
             return res.status(404).json({ message: "Song not found" });
         }
 
-        // IMPORTANT: compare ObjectIds correctly
         const exists = playlist.songs.some(
             (id) => id.toString() === song._id.toString()
         );
 
         if (!exists) {
             playlist.songs.push(song._id);
-
-            // 🔥 IMPORTANT FIX
             user.markModified("playlists");
         }
 
         await user.save();
 
+        // 🔥 IMPORTANT: re-fetch with populate AFTER saving
+        const updatedUser = await User.findOne({ firebase_uid: uid })
+            .populate("playlists.songs");
+
+        const updatedPlaylist = updatedUser.playlists.id(playlistId);
+
         return res.json({
             message: exists ? "Already exists" : "Song added",
-            playlist
+            playlist: updatedPlaylist
         });
 
     } catch (err) {
