@@ -4,13 +4,6 @@ module.exports = {
 
 createUser: async (req, res) => {
     try {
-
-        if (!req.body.firebase_uid) {
-            return res.status(400).json({
-                code: "UID_REQUIRED",
-                message: "UID is required"
-            });
-        }
         const existingUser = await User.findOne({ username: req.body.username });
 
         if (existingUser) {
