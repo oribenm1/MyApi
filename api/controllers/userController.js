@@ -3,6 +3,9 @@ const User = require("../models/userModel");
 module.exports = {
 
 createUser: async (req, res) => {
+
+    console.log(req.body);
+    
     try {
 
         const {
